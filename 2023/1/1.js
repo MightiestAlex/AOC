@@ -22,6 +22,8 @@ fs.readFile('fkdata', 'utf8', (err, data) => {
 
     unfiltered = data.replaceAll(/\s/g,'-').split('-');
 
+    console.log(unfiltered.length);
+
     for(let i=0; i<unfiltered.length; i++){
 
 
@@ -48,7 +50,7 @@ fs.readFile('fkdata', 'utf8', (err, data) => {
 	
     }
 
-   console.log(total)
+   //console.log(total)
 
 
 })

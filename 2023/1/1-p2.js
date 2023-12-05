@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 let stored = [];
-let temper;
 let total = 0;
 
 const info = {
@@ -17,13 +16,13 @@ const info = {
     'nine' : 9
 };
 
+//Silly search function, only iterates the length of the match.
 function matcher(info, match){
     if (match.length === 0 ){
 	return true;
     }else if (info.length === 0) {
 	return false;
     }else if(info[0] === match[0]){
-//	console.log( info, match);
 	return matcher(info.slice(1), match.slice(1))
     }else {
 	return false;
@@ -34,61 +33,45 @@ fs.readFile('data', 'utf8', (err, data) => {
     if (err) {throw err}
 
     stored = data.replaceAll(/\s/g,'-').split('-');
+    
+    let newArray = new Array(stored.length).fill('');
 
     for (let f = 0; f < stored.length; f++){
-    
-	for(let a = 0; a < stored[f].length; a ++){
 
+	//Iterates through the element, moving discovered digits sequentialy to a new array.
+	for(let a = 0; a < stored[f].length; a ++){
+	    
+	    if (/\d/.test(stored[f][a])){
+		newArray[f] += stored[f][a];
+	    }
+
+	    // Each iteration atches against all the objects keys.
 	    for(key in info){
 
-		if(matcher(stored[f].slice(a), key))
-		{
-		    stored[f] = stored[f].replace(key, info[key]);
+		if(matcher(stored[f].slice(a), key)){
+		    newArray[f] += info[key];
 		}	    
 	    }	  
 	}
 	
-	stored[f] = stored[f].replaceAll(/\D/g, '');
-	
-	
-	  
-/*	if(stored[f].length = 1) {
+	let temp;
 
-	    temper = stored[f]
-
-	    stored[f] =  +temper.slice(0, 1)*10 + +temper.slice(0, 1)
-	    total += +stored[f];
+	if(newArray[f].length > 1) {
+	    temp = newArray[f]
 	
-	   // total += +stored[f].slice(0, 1)*10
-	   // total += +stored[f].slice(0, 1);
-	    continue;
-	    }
-	    */
+	    newArray[f]  =  +temp.slice(0, 1)*10 + +temp.slice(-1);
 
-	if(stored[f].length > 1) {
-	temper = stored[f]
-	
-	stored[f]  =  +temper.slice(0, 1)*10 + +temper.slice(-1);
-
-	    total += +stored[f];
+	    total += +newArray[f];
 	}
 	else {
-	    	    temper = stored[f]
+	    temp = newArray[f]
 
-	    stored[f] =  +temper.slice(0, 1)*10 + +temper.slice(0, 1)
-	    total += +stored[f]
-
-	}
-	
+	    newArray[f] =  +temp.slice(0, 1)*10 + +temp.slice(0, 1)
 	    
+	    total += +newArray[f]
+	}	    
     }
-
-   console.log(data); 
-    console.log(stored);
-	
-   
-
    console.log(total)
-
-
 })
+
+//https://adventofcode.com/2023/day/1
